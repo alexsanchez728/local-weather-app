@@ -56,7 +56,7 @@ const printToDom = (strang) => {
 		 	 <div class=" col-xs-12">
     		 <div class="well">
 					<div class="btn-group col-xs-offset-3" role="group" id="days">
-						<button type="button" class="btn btn-default" id="one-day">Today's forecast</button>
+						<button type="button" class="btn btn-default" name="one day" id="one-day">Today's forecast</button>
 						<button type="button" class="btn btn-default" id="three-day">3 day forecast</button>
 						<button type="button" class="btn btn-default" id="seven-day">7 day forecast</button>
 		 			</div>

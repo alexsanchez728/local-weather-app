@@ -25,7 +25,6 @@ const searchWeather = (query) => {
 
 const setKeys = (apiKey) => {
 	owmKey = apiKey;
-	console.log("api key", owmKey);
 };
 
 const showResults = (weatherArray) => {
