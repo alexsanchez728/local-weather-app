@@ -3,23 +3,32 @@
 const owm = require("./owm");
 const dom = require("./dom");
 
+// const fiveDigitRegex=/^[0-9]+$/;
+const usZipCodeRegex =/(^\d{5}$)|(^\d{5}-\d{4}$)/;
+
 const pressEnter = () => {
 	$(document).keypress((event) => {
 		if (event.key === "Enter") {
-			// let searchText = $("#search-bar").val();
-			// owm.searchWeather(searchText);
-			owm.searchWeather(90210);
-			daysChosen();
-		} 
+			searchZipcode();
+			} 
 	});
-
 };
 
+const pressSearch = () => {
+	$("#search-btn").click((event) => {
+		searchZipcode();
+	});
+};
+
+
+
+// This function might need clean up aka try not to use such nasty dom traversal
 const daysChosen = () => {
 	$(document).click((e) => {
 		// only run when the buttons are clicked
-		if (e.target.className === "btn btn-default") {
-
+		if (e.target.parentNode.id === "days") {
+		// if (e.target.parentNode.id === "days") {
+			console.log("here!");
 			let currentChoiceFromDom = e.target.id;
 
 			// using the id name set the corresponding number of days to show up
@@ -29,6 +38,20 @@ const daysChosen = () => {
 			dom.showChosenNumberOfDays(currentChoiceNumber);
 		}
 	});
+};
+
+const searchZipcode = () => {
+	let searchInput = $("#search-input").val();
+
+	if (searchInput.length === 5 && searchInput.match(usZipCodeRegex)) {
+		console.log("you entered a zipcode!");
+		owm.searchWeather(searchInput);
+		daysChosen();
+
+	}
+			// else {
+			// 	// dom.printError(notAZip);
+			// }
 };
 
 
