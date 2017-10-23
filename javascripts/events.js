@@ -30,7 +30,7 @@ const daysChosen = () => {
 			let currentChoiceFromDom = e.target.id;
 
 			// using the id name set the corresponding number of days to show up
-			let currentChoiceNumber = (currentChoiceFromDom === "one-day" ? 1 : currentChoiceFromDom === "three-day" ? 3 : 7);
+			let currentChoiceNumber = (currentChoiceFromDom === "one-day" ? 1 : currentChoiceFromDom === "three-day" ? 3 : 5);
 			
 			// And re-run the dom function showing the correct number of days chosen, using the same zip search.
 			dom.showChosenNumberOfDays(currentChoiceNumber);

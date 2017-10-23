@@ -1,0 +1,10 @@
+@import 'variables';
+
+body { 
+	padding-bottom: 120px; 
+}
+
+
+#weatherContainer {
+	box-shadow: $box-shadow;
+}
