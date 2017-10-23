@@ -20,6 +20,7 @@ const searchWeather = (query) => {
 			showResults(data);
 	}).catch((error) => {
 		console.log("error in search weather", error);
+		dom.printError();
 	});
 };
 

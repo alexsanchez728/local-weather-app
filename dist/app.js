@@ -25,11 +25,6 @@ module.exports = {retrieveKeys};
 },{"./owm":5}],2:[function(require,module,exports){
 "use strict";
 
-// print only the current weather at first
-	// when it prints ...
-	// ... show an option to show 3, 5, & 7 day forcast
-	// when clicked: reprint using their button choice as: i<chosenLength
-
 let chosenLength = 1;
 let weatherArray;
 
@@ -47,7 +42,6 @@ const domString = (weatherArray, days) => {
 		if (i % 3 === 0) {
 			domStrang +=	`<div class="row">`;
 		}
-		// domStrang +=		`<div class="row">`;
 		domStrang +=			`<div class="col-sm-3">`;
 		domStrang +=				`<div class="thumbnail text-center">`;
 		domStrang +=					`<div class="info">`;
@@ -69,18 +63,20 @@ const domString = (weatherArray, days) => {
 	printToDom(domStrang);
 };
 
-const printToDom = (strang) => {
+const printForecastOptions = () => {
 
-	$("#output").append(strang);
-	$("#days").html (
-		`<div class="container"
+let timeStamp = new Date().toLocaleTimeString();
+
+		$("#days").html (
+		`<div class="container">
 		  <div class="row">
 		 	 <div class=" col-xs-12">
     		 <div class="well">
 					<div class="btn-group col-xs-offset-3" role="group" id="days">
 						<button type="button" class="btn btn-default" name="one day" id="one-day">Today's forecast</button>
 						<button type="button" class="btn btn-default" id="three-day">3 day forecast</button>
-						<button type="button" class="btn btn-default" id="seven-day">7 day forecast</button>
+						<button type="button" class="btn btn-default" id="seven-day">5 day forecast</button>
+						<p class="text-center">Last Updated: ${timeStamp}</p>
 		 			</div>
 		 		</div>
 		 	</div>
@@ -88,6 +84,11 @@ const printToDom = (strang) => {
 		);
 };
 
+const printToDom = (strang) => {
+
+	$("#output").append(strang);
+	printForecastOptions();
+};
 
 const setWeatherArray = (weather) => {
 	 weatherArray = weather;
@@ -99,13 +100,24 @@ const showChosenNumberOfDays = (numberOfDays) => {
 	runDomString();
 };
 
-
 const clearDom = () => {
 	$("#output").empty();
 };
 
+const printError = () => {
+	clearDom();
 
-module.exports = {setWeatherArray, clearDom, showChosenNumberOfDays};
+	let userError = "";
+		userError += `<div class="row">`;
+		userError += `<div class="alert alert-danger text-center col-xs-6 col-xs-offset-3" role="alert">Sorry, I only accept valid 5 digit US zip codes. ¯\\\_(ツ)_/¯</div>`;
+		userError += `</div>`;
+	$("#output").append(userError);
+};
+
+
+
+
+module.exports = {setWeatherArray, clearDom, showChosenNumberOfDays, printError};
 },{}],3:[function(require,module,exports){
 "use strict";
 
@@ -154,10 +166,9 @@ const searchZipcode = () => {
 		owm.searchWeather(searchInput);
 		daysChosen();
 
-	}
-			// else {
-			// 	// dom.printError(notAZip);
-			// }
+	} else {
+			dom.printError();
+		}
 };
 
 
@@ -196,6 +207,7 @@ const searchWeather = (query) => {
 			showResults(data);
 	}).catch((error) => {
 		console.log("error in search weather", error);
+		dom.printError();
 	});
 };
 

@@ -45,10 +45,9 @@ const searchZipcode = () => {
 		owm.searchWeather(searchInput);
 		daysChosen();
 
-	}
-			// else {
-			// 	// dom.printError(notAZip);
-			// }
+	} else {
+			dom.printError();
+		}
 };
 
 
