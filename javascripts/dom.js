@@ -12,8 +12,8 @@ const runDomString = () => {
 const domString = (weatherArray, days) => {
 	let domStrang = "";
 
-		domStrang +=	`<div class="container-fluid">`;
-		domStrang +=		`<h3 class="text-center" id="cityName">${weatherArray.city.name}</h3>`;
+	domStrang +=	`<div class="container-fluid">`;
+	domStrang +=		`<h3 class="text-center" id="cityName">For Zipcode: "${$('#search-input').val()}"</h3>`;
 
 	for (let i=0; i<chosenLength; i++) {
 
@@ -24,11 +24,11 @@ const domString = (weatherArray, days) => {
 		domStrang +=			`<div class="col-sm-3">`;
 		domStrang +=				`<div class="thumbnail text-center" id="weatherCard">`;
 		domStrang +=					`<div class="info" id="weatherInfo">`;
-		domStrang +=					`<h4 id="date">${weatherArray.list[i].dt_txt}</h4>`;
-		domStrang +=						`<p>Temperature: ${weatherArray.list[i].main.temp}&deg F</p>`;
-		domStrang +=						`<p>Conditions: ${weatherArray.list[i].weather[0].description}</p>`;
-		domStrang +=						`<p>Air pressure: ${weatherArray.list[i].main.pressure} hpa</p>`;
-		domStrang +=						`<p>Wind speed: ${weatherArray.list[i].wind.speed} m/s</p>`;
+		domStrang +=					`<h4 id="date">${weatherArray[i].dt_txt}</h4>`;
+		domStrang +=						`<p>Temperature: ${weatherArray[i].main.temp}&deg F</p>`;
+		domStrang +=						`<p>Conditions:<img src="http://openweathermap.org/img/w/${weatherArray[i].weather[0].icon}.png"></p> `;
+		domStrang +=						`<p>Air pressure: ${weatherArray[i].main.pressure} hpa</p>`;
+		domStrang +=						`<p>Wind speed: ${weatherArray[i].wind.speed} m/s</p>`;
 		domStrang +=					`</div>`;
 		domStrang +=				`</div>`;
 		domStrang +=			`</div>`;
