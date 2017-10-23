@@ -37,8 +37,8 @@ const runDomString = () => {
 const domString = (weatherArray, days) => {
 	let domStrang = "";
 
-		domStrang +=	`<div class="container-fluid">`;
-		domStrang +=		`<h3 class="text-center" id="cityName">For Zipcode: "${$('#search-input').val()}"</h3>`;
+	domStrang +=	`<div class="container-fluid">`;
+	domStrang +=		`<h3 class="text-center" id="cityName">For Zipcode: "${$('#search-input').val()}"</h3>`;
 
 	for (let i=0; i<chosenLength; i++) {
 
@@ -125,8 +125,8 @@ module.exports = {setWeatherArray, clearDom, showChosenNumberOfDays, printError}
 const owm = require("./owm");
 const dom = require("./dom");
 
-// const fiveDigitRegex=/^[0-9]+$/;
 const usZipCodeRegex =/(^\d{5}$)|(^\d{5}-\d{4}$)/;
+
 
 const pressEnter = () => {
 	$(document).keypress((event) => {
@@ -142,9 +142,6 @@ const pressSearch = () => {
 	});
 };
 
-
-
-// This function might need clean up aka try not to use such nasty dom traversal
 const daysChosen = () => {
 	$(document).click((e) => {
 		// only run when the buttons are clicked
@@ -154,7 +151,6 @@ const daysChosen = () => {
 			// using the id name set the corresponding number of days to show up
 			let currentChoiceNumber = (currentChoiceFromDom === "one-day" ? 1 : currentChoiceFromDom === "three-day" ? 3 : 5);
 			
-			// And re-run the dom function showing the correct number of days chosen, using the same zip search.
 			dom.showChosenNumberOfDays(currentChoiceNumber);
 		}
 	});
@@ -171,8 +167,6 @@ const searchZipcode = () => {
 			dom.printError();
 		}
 };
-
-
 
 module.exports = {pressEnter, pressSearch, daysChosen};
 },{"./dom":2,"./owm":5}],4:[function(require,module,exports){
@@ -195,7 +189,6 @@ const searchOwm = (query) => {
 	return new Promise((resolve, reject) => {
 		$.ajax(`http://api.openweathermap.org/data/2.5/forecast?zip=${query},us&appid=${owmKey}&units=imperial`).done((data) => {
 			resolve(data);
-			console.log(data);
 		}).fail((error) => {
 			reject(error);
 		});
@@ -220,7 +213,6 @@ const showResults = (weatherArray) => {
 	let fiveDayForecast = [];
 
 	for (let i=0; i<weatherArray.list.length; i++) {
-
 		if (i === 0 ||i ===  8 || i === 16 ||i ===  32 ||i === 39) {
 			fiveDayForecast.push(weatherArray.list[i]);
 		}

@@ -7,7 +7,6 @@ const searchOwm = (query) => {
 	return new Promise((resolve, reject) => {
 		$.ajax(`http://api.openweathermap.org/data/2.5/forecast?zip=${query},us&appid=${owmKey}&units=imperial`).done((data) => {
 			resolve(data);
-			console.log(data);
 		}).fail((error) => {
 			reject(error);
 		});
@@ -32,7 +31,6 @@ const showResults = (weatherArray) => {
 	let fiveDayForecast = [];
 
 	for (let i=0; i<weatherArray.list.length; i++) {
-
 		if (i === 0 ||i ===  8 || i === 16 ||i ===  32 ||i === 39) {
 			fiveDayForecast.push(weatherArray.list[i]);
 		}

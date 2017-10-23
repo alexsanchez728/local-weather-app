@@ -12,8 +12,8 @@ const runDomString = () => {
 const domString = (weatherArray, days) => {
 	let domStrang = "";
 
-		domStrang +=	`<div class="container-fluid">`;
-		domStrang +=		`<h3 class="text-center" id="cityName">For Zipcode: "${$('#search-input').val()}"</h3>`;
+	domStrang +=	`<div class="container-fluid">`;
+	domStrang +=		`<h3 class="text-center" id="cityName">For Zipcode: "${$('#search-input').val()}"</h3>`;
 
 	for (let i=0; i<chosenLength; i++) {
 
