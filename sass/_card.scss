@@ -1,0 +1,10 @@
+@import 'variables';
+
+#weatherCard {
+	height: 250px;
+	box-shadow: $box-shadow;
+
+	#weatherInfo {
+		line-height: 35px;
+	}
+}

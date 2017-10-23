@@ -38,14 +38,18 @@ const domString = (weatherArray, days) => {
 	let domStrang = "";
 
 		domStrang +=	`<div class="container-fluid">`;
+		domStrang +=		`<h3 class="text-center" id="cityName">${weatherArray.city.name}</h3>`;
+
 	for (let i=0; i<chosenLength; i++) {
+
 		if (i % 3 === 0) {
 			domStrang +=	`<div class="row">`;
-		}
+			}
+
 		domStrang +=			`<div class="col-sm-3">`;
-		domStrang +=				`<div class="thumbnail text-center">`;
-		domStrang +=					`<div class="info">`;
-		domStrang +=						`<h3>${weatherArray.city.name}</h3>`;
+		domStrang +=				`<div class="thumbnail text-center" id="weatherCard">`;
+		domStrang +=					`<div class="info" id="weatherInfo">`;
+		domStrang +=					`<h4 id="date">${weatherArray.list[i].dt_txt}</h4>`;
 		domStrang +=						`<p>Temperature: ${weatherArray.list[i].main.temp}&deg F</p>`;
 		domStrang +=						`<p>Conditions: ${weatherArray.list[i].weather[0].description}</p>`;
 		domStrang +=						`<p>Air pressure: ${weatherArray.list[i].main.pressure} hpa</p>`;
@@ -56,36 +60,33 @@ const domString = (weatherArray, days) => {
 				if (i % 3 === 2 || i === chosenLength - 1) {
 			domStrang +=	`</div>`;
 		}
-
-
 	}
-		domStrang +=		`</div>`;
+	domStrang +=		`</div>`;
 	printToDom(domStrang);
 };
 
 const printForecastOptions = () => {
 
-let timeStamp = new Date().toLocaleTimeString();
+	let timeStamp = new Date().toLocaleTimeString();
 
-		$("#days").html (
-		`<div class="container">
-		  <div class="row">
-		 	 <div class=" col-xs-12">
-    		 <div class="well">
-					<div class="btn-group col-xs-offset-3" role="group" id="days">
-						<button type="button" class="btn btn-default" name="one day" id="one-day">Today's forecast</button>
-						<button type="button" class="btn btn-default" id="three-day">3 day forecast</button>
-						<button type="button" class="btn btn-default" id="seven-day">5 day forecast</button>
-						<p class="text-center">Last Updated: ${timeStamp}</p>
-		 			</div>
-		 		</div>
-		 	</div>
-		 </div>`
-		);
+	$("#days").html (
+	`<div class="container">
+	  <div class="row">
+	 	 <div class=" col-xs-12">
+  		 <div class="well">
+				<div class="btn-group col-xs-offset-3" role="group" id="days">
+					<button type="button" class="btn btn-default" name="one day" id="one-day">Today's forecast</button>
+					<button type="button" class="btn btn-default" id="three-day">3 day forecast</button>
+					<button type="button" class="btn btn-default" id="five-day">5 day forecast</button>
+					<p class="text-center">Last Updated: ${timeStamp}</p>
+	 			</div>
+	 		</div>
+	 	</div>
+	 </div>`
+	);
 };
 
 const printToDom = (strang) => {
-
 	$("#output").append(strang);
 	printForecastOptions();
 };
@@ -151,7 +152,7 @@ const daysChosen = () => {
 			let currentChoiceFromDom = e.target.id;
 
 			// using the id name set the corresponding number of days to show up
-			let currentChoiceNumber = (currentChoiceFromDom === "one-day" ? 1 : currentChoiceFromDom === "three-day" ? 3 : 7);
+			let currentChoiceNumber = (currentChoiceFromDom === "one-day" ? 1 : currentChoiceFromDom === "three-day" ? 3 : 5);
 			
 			// And re-run the dom function showing the correct number of days chosen, using the same zip search.
 			dom.showChosenNumberOfDays(currentChoiceNumber);
@@ -192,10 +193,11 @@ const dom = require("./dom");
 
 const searchOwm = (query) => {
 	return new Promise((resolve, reject) => {
-		// console.log("my key made it to searchOwm", owmKey);
-		// console.log("my query made it to searchOwm", query);
-		$.ajax(`http://api.openweathermap.org/data/2.5/forecast?zip=${query},us&appid=${owmKey}&units=imperial&cnt=7`).done((data) => {
+
+		$.ajax(`http://api.openweathermap.org/data/2.5/forecast?zip=${query},us&appid=${owmKey}&units=imperial&cnt=5`).done((data) => {
+			// 					 api.openweathermap.org/data/2.5/forecast/daily?zip={zip code},{country code}
 			resolve(data);
+			console.log(data);
 		}).fail((error) => {
 			reject(error);
 		});
@@ -218,7 +220,7 @@ const setKeys = (apiKey) => {
 const showResults = (weatherArray) => {
 	dom.clearDom();
 
-	// just get all 7 days, store em in setWeatherArray, only show what the user asks for
+	// just get all 5 days, store em in setWeatherArray, only show what the user asks for
 	// That way I can minimize the calls I make to the API
 
 	dom.setWeatherArray(weatherArray);
