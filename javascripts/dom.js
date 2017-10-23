@@ -10,9 +10,6 @@ let weatherArray;
 
 
 const runDomString = () => {
-	console.log("weatherArray", weatherArray);
-	console.log("how many days of data will show up", chosenLength);
-
 	clearDom();
 	domString(weatherArray, chosenLength);
 };

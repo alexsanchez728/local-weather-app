@@ -27,8 +27,6 @@ const daysChosen = () => {
 	$(document).click((e) => {
 		// only run when the buttons are clicked
 		if (e.target.parentNode.id === "days") {
-		// if (e.target.parentNode.id === "days") {
-			console.log("here!");
 			let currentChoiceFromDom = e.target.id;
 
 			// using the id name set the corresponding number of days to show up
@@ -43,8 +41,7 @@ const daysChosen = () => {
 const searchZipcode = () => {
 	let searchInput = $("#search-input").val();
 
-	if (searchInput.length === 5 && searchInput.match(usZipCodeRegex)) {
-		console.log("you entered a zipcode!");
+	if (searchInput.match(usZipCodeRegex)) {
 		owm.searchWeather(searchInput);
 		daysChosen();
 
@@ -56,4 +53,4 @@ const searchZipcode = () => {
 
 
 
-module.exports = {pressEnter, daysChosen};
+module.exports = {pressEnter, pressSearch, daysChosen};
