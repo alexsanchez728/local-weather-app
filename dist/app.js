@@ -35,9 +35,6 @@ let weatherArray;
 
 
 const runDomString = () => {
-	console.log("weatherArray", weatherArray);
-	console.log("how many days of data will show up", chosenLength);
-
 	clearDom();
 	domString(weatherArray, chosenLength);
 };
@@ -139,8 +136,6 @@ const daysChosen = () => {
 	$(document).click((e) => {
 		// only run when the buttons are clicked
 		if (e.target.parentNode.id === "days") {
-		// if (e.target.parentNode.id === "days") {
-			console.log("here!");
 			let currentChoiceFromDom = e.target.id;
 
 			// using the id name set the corresponding number of days to show up
@@ -155,8 +150,7 @@ const daysChosen = () => {
 const searchZipcode = () => {
 	let searchInput = $("#search-input").val();
 
-	if (searchInput.length === 5 && searchInput.match(usZipCodeRegex)) {
-		console.log("you entered a zipcode!");
+	if (searchInput.match(usZipCodeRegex)) {
 		owm.searchWeather(searchInput);
 		daysChosen();
 
@@ -168,7 +162,7 @@ const searchZipcode = () => {
 
 
 
-module.exports = {pressEnter, daysChosen};
+module.exports = {pressEnter, pressSearch, daysChosen};
 },{"./dom":2,"./owm":5}],4:[function(require,module,exports){
 "use strict";
 
@@ -176,7 +170,7 @@ let events = require("./events");
 let apiKeys = require("./apiKeys");
 
 apiKeys.retrieveKeys();
-// apiKeys.apiKeys();
+events.pressSearch();
 events.pressEnter();
 
 },{"./apiKeys":1,"./events":3}],5:[function(require,module,exports){
