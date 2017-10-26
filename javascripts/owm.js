@@ -31,7 +31,7 @@ const showResults = (weatherArray) => {
 	let fiveDayForecast = [];
 
 	for (let i=0; i<weatherArray.list.length; i++) {
-		if (i === 0 ||i ===  8 || i === 16 ||i ===  32 ||i === 39) {
+		if (i === 0 ||i ===  8 || i === 16 ||i ===  24 ||i === 32) {
 			fiveDayForecast.push(weatherArray.list[i]);
 		}
 	}
@@ -42,6 +42,7 @@ const showResults = (weatherArray) => {
 	// That way I can minimize the calls I make to the API
 
 	dom.setWeatherArray(fiveDayForecast);
+	console.log(fiveDayForecast);
 };
 
 module.exports = {setKeys, searchWeather};

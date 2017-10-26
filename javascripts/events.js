@@ -46,4 +46,45 @@ const searchZipcode = () => {
 		}
 };
 
-module.exports = {pressEnter, pressSearch, daysChosen};
+
+// Add function: myLinks - click events that checks the id of event.target and:
+const myLinks = () => {
+	$(document).click((e) => {
+		if (e.target.id === "navSearch") {
+			$("#search").removeClass("hide");
+			$("#myWeather").addClass("hide");
+			$("#authScreen").addClass("hide");
+		} else if (e.target.id === "mine") {
+			// // This should rerun the get method from our search, so the user doesn't have to reload to show changes
+			// getTheMovies();
+			$("#search").addClass("hide");
+			$("#myWeather").removeClass("hide");
+			$("#authScreen").addClass("hide");
+		} else if (e.target.id === "authenticate") {
+			$("#search").addClass("hide");
+			$("#myWeather").addClass("hide");
+			$("#authScreen").removeClass("hide");
+		}
+	});
+};
+
+// const googleAuth = () => {
+// 	$("#googleButton").click((event) => {
+// 		firebaseApi.authenticateGoogle().then((result) => {
+// 		}).catch((err) => {
+// 			console.log("error in authenticateGoogle", err);
+// 		});
+// 	});
+// };
+
+
+const init = () => {
+ pressEnter();
+ pressSearch();
+ daysChosen();
+ myLinks();
+};
+
+
+
+module.exports = {init};

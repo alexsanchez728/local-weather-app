@@ -49,7 +49,7 @@ const domString = (weatherArray, days) => {
 		domStrang +=			`<div class="col-sm-3">`;
 		domStrang +=				`<div class="thumbnail text-center" id="weatherCard">`;
 		domStrang +=					`<div class="info" id="weatherInfo">`;
-		domStrang +=					`<h4 id="date">${weatherArray[i].dt_txt}</h4>`;
+		domStrang +=					`<h4 id="date">${new Date(weatherArray[i].dt_txt).toLocaleDateString()}</h4>`;
 		domStrang +=						`<p>Temperature: ${weatherArray[i].main.temp}&deg F</p>`;
 		domStrang +=						`<p>Conditions:<img src="http://openweathermap.org/img/w/${weatherArray[i].weather[0].icon}.png"></p> `;
 		domStrang +=						`<p>Air pressure: ${weatherArray[i].main.pressure} hpa</p>`;
@@ -68,7 +68,7 @@ const domString = (weatherArray, days) => {
 const printForecastOptions = () => {
 
 	let timeStamp = new Date().toLocaleTimeString();
-
+	// maybe put this in the index with a hide class??
 	$("#days").html (
 	`<div class="container">
 	  <div class="row">
@@ -79,6 +79,16 @@ const printForecastOptions = () => {
 					<button type="button" class="btn btn-default" id="three-day">3 day forecast</button>
 					<button type="button" class="btn btn-default" id="five-day">5 day forecast</button>
 					<p class="text-center">Last Updated: ${timeStamp}</p>
+
+					<div>
+					  <button class="btn btn-lg btn-default" id="facebookButton">
+   						<img src="./images/facebook.png">
+  					</button>
+					  <button class="btn btn-lg btn-default" id="twitterButton">
+   						<img src="./images/twitter.png">
+  					</button>
+					</div>
+
 	 			</div>
 	 		</div>
 	 	</div>
@@ -168,7 +178,48 @@ const searchZipcode = () => {
 		}
 };
 
-module.exports = {pressEnter, pressSearch, daysChosen};
+
+// Add function: myLinks - click events that checks the id of event.target and:
+const myLinks = () => {
+	$(document).click((e) => {
+		if (e.target.id === "navSearch") {
+			$("#search").removeClass("hide");
+			$("#myWeather").addClass("hide");
+			$("#authScreen").addClass("hide");
+		} else if (e.target.id === "mine") {
+			// // This should rerun the get method from our search, so the user doesn't have to reload to show changes
+			// getTheMovies();
+			$("#search").addClass("hide");
+			$("#myWeather").removeClass("hide");
+			$("#authScreen").addClass("hide");
+		} else if (e.target.id === "authenticate") {
+			$("#search").addClass("hide");
+			$("#myWeather").addClass("hide");
+			$("#authScreen").removeClass("hide");
+		}
+	});
+};
+
+// const googleAuth = () => {
+// 	$("#googleButton").click((event) => {
+// 		firebaseApi.authenticateGoogle().then((result) => {
+// 		}).catch((err) => {
+// 			console.log("error in authenticateGoogle", err);
+// 		});
+// 	});
+// };
+
+
+const init = () => {
+ pressEnter();
+ pressSearch();
+ daysChosen();
+ myLinks();
+};
+
+
+
+module.exports = {init};
 },{"./dom":2,"./owm":5}],4:[function(require,module,exports){
 "use strict";
 
@@ -176,9 +227,7 @@ let events = require("./events");
 let apiKeys = require("./apiKeys");
 
 apiKeys.retrieveKeys();
-events.pressSearch();
-events.pressEnter();
-
+events.init();
 },{"./apiKeys":1,"./events":3}],5:[function(require,module,exports){
 "use strict";
 
@@ -213,7 +262,7 @@ const showResults = (weatherArray) => {
 	let fiveDayForecast = [];
 
 	for (let i=0; i<weatherArray.list.length; i++) {
-		if (i === 0 ||i ===  8 || i === 16 ||i ===  32 ||i === 39) {
+		if (i === 0 ||i ===  8 || i === 16 ||i ===  24 ||i === 32) {
 			fiveDayForecast.push(weatherArray.list[i]);
 		}
 	}
@@ -224,6 +273,7 @@ const showResults = (weatherArray) => {
 	// That way I can minimize the calls I make to the API
 
 	dom.setWeatherArray(fiveDayForecast);
+	console.log(fiveDayForecast);
 };
 
 module.exports = {setKeys, searchWeather};

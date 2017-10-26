@@ -7,7 +7,45 @@
 </head>
 <body>
 
-<div class="container">
+<nav class="navbar navbar-inverse navbar-static-top">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Weather</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a id="authenticate">Authentication</a></li>
+        <li><a id="mine">My fav weather</a></li>
+        <li><a id="navSearch">Search</a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+
+<div class="text-center" id="authScreen">
+  <h1>Sign in</h1>
+	  <div class="input-group col-sm-2 col-sm-offset-5">
+		  <!-- <span class="input-group-addon glyphicon glyphicon-user"></span> -->
+		  <input type="text" class="form-control" placeholder="User Name" name='j_username'>
+	    <input type="password" class="form-control" name="password" placeholder="Password" required=""/> 
+		</div>
+  <button class="btn btn-lg btn-default" id="googleButton">
+    <img src="./images/google.png">
+  </button>
+</div>
+
+
+<div class="container hide" id="search">
 	<h3 class="text-center">Enter a zipcode below to see current weather conditions</h3>
 	<div class="row">
 	  <div class="col-xs-6 col-xs-offset-3">
@@ -22,9 +60,17 @@
 	<p></p>
 </div>
 
+
 <div id="output"></div>
 
+<div class="text-center hide" id="myWeather">
+  <h1> My Fav Weather</h1>
+  <div id="weatherMine"></div>
+</div>
+
 <div id="days" class="footer navbar-fixed-bottom"></div>
+
+
 <script type="text/javascript" src="./lib/node_modules/jquery/dist/jquery.js"></script>
 <script type="text/javascript" src="./lib/node_modules/bootstrap/dist/js/bootstrap.js"></script>
 <script type="text/javascript" src="./dist/app.js"></script>

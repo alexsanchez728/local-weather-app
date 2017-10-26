@@ -24,7 +24,7 @@ const domString = (weatherArray, days) => {
 		domStrang +=			`<div class="col-sm-3">`;
 		domStrang +=				`<div class="thumbnail text-center" id="weatherCard">`;
 		domStrang +=					`<div class="info" id="weatherInfo">`;
-		domStrang +=					`<h4 id="date">${weatherArray[i].dt_txt}</h4>`;
+		domStrang +=					`<h4 id="date">${new Date(weatherArray[i].dt_txt).toLocaleDateString()}</h4>`;
 		domStrang +=						`<p>Temperature: ${weatherArray[i].main.temp}&deg F</p>`;
 		domStrang +=						`<p>Conditions:<img src="http://openweathermap.org/img/w/${weatherArray[i].weather[0].icon}.png"></p> `;
 		domStrang +=						`<p>Air pressure: ${weatherArray[i].main.pressure} hpa</p>`;
@@ -43,7 +43,7 @@ const domString = (weatherArray, days) => {
 const printForecastOptions = () => {
 
 	let timeStamp = new Date().toLocaleTimeString();
-
+	// maybe put this in the index with a hide class??
 	$("#days").html (
 	`<div class="container">
 	  <div class="row">
@@ -54,6 +54,16 @@ const printForecastOptions = () => {
 					<button type="button" class="btn btn-default" id="three-day">3 day forecast</button>
 					<button type="button" class="btn btn-default" id="five-day">5 day forecast</button>
 					<p class="text-center">Last Updated: ${timeStamp}</p>
+
+					<div>
+					  <button class="btn btn-lg btn-default" id="facebookButton">
+   						<img src="./images/facebook.png">
+  					</button>
+					  <button class="btn btn-lg btn-default" id="twitterButton">
+   						<img src="./images/twitter.png">
+  					</button>
+					</div>
+
 	 			</div>
 	 		</div>
 	 	</div>
