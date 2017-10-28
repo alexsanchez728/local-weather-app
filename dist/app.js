@@ -2,6 +2,7 @@
 "use strict";
 
 const owm = require("./owm");
+const firebaseApi = require("./firebaseapi");
 
 const apiKeys = () => {
 	return new Promise((resolve, reject) => {
@@ -16,25 +17,34 @@ const apiKeys = () => {
 const retrieveKeys = () => {
 	apiKeys().then((results) => {
 		owm.setKeys(results.owm.apiKey);
+		firebaseApi.setKey(results.firebaseKeys);
+		firebase.initializeApp(results.firebaseKeys);
 	}).catch((error) => {
 			console.log("error", error);
 	});
 };
 
 module.exports = {retrieveKeys};
-},{"./owm":5}],2:[function(require,module,exports){
+},{"./firebaseapi":4,"./owm":6}],2:[function(require,module,exports){
 "use strict";
 
 let chosenLength = 1;
 let weatherArray;
 
-
-const runDomString = () => {
+const setWeatherArray = (weather, divName, search) => {
+	weatherArray = weather;
 	clearDom();
-	domString(weatherArray, chosenLength);
+	domString(weatherArray, divName, chosenLength, search);
 };
 
-const domString = (weatherArray, days) => {
+
+//Do I need divName here??
+const showChosenNumberOfDays = (numberOfDays, divName, search) => {
+	chosenLength = numberOfDays;
+	domString(weatherArray, divName, chosenLength, search);
+};
+
+const domString = (weatherArray, divName, days, search) => {
 	let domStrang = "";
 
 	domStrang +=	`<div class="container-fluid">`;
@@ -47,6 +57,11 @@ const domString = (weatherArray, days) => {
 			}
 
 		domStrang +=			`<div class="col-sm-3">`;
+
+		if (!search) {
+			domStrang +=				`<button class="btn btn-default delete" data-firebase-id="${weatherArray[i].id}">X</button>`;
+		}
+
 		domStrang +=				`<div class="thumbnail text-center" id="weatherCard">`;
 		domStrang +=					`<div class="info" id="weatherInfo">`;
 		domStrang +=					`<h4 id="date">${new Date(weatherArray[i].dt_txt).toLocaleDateString()}</h4>`;
@@ -54,6 +69,14 @@ const domString = (weatherArray, days) => {
 		domStrang +=						`<p>Conditions:<img src="http://openweathermap.org/img/w/${weatherArray[i].weather[0].icon}.png"></p> `;
 		domStrang +=						`<p>Air pressure: ${weatherArray[i].main.pressure} hpa</p>`;
 		domStrang +=						`<p>Wind speed: ${weatherArray[i].wind.speed} m/s</p>`;
+
+		if(search) {
+
+			domStrang +=					`<p>`;
+			domStrang +=						`<a class="btn btn-default favWeather" role="button">Save This Day!</a>`;
+			domStrang +=					`</p>`;
+		}
+
 		domStrang +=					`</div>`;
 		domStrang +=				`</div>`;
 		domStrang +=			`</div>`;
@@ -62,7 +85,7 @@ const domString = (weatherArray, days) => {
 		}
 	}
 	domStrang +=		`</div>`;
-	printToDom(domStrang);
+	printToDom(domStrang, divName, search);
 };
 
 const printForecastOptions = () => {
@@ -96,23 +119,16 @@ const printForecastOptions = () => {
 	);
 };
 
-const printToDom = (strang) => {
-	$("#output").append(strang);
-	printForecastOptions();
+const printToDom = (strang, divName, search) => {
+	$(`#${divName}`).append(strang);
+
+	if (search) {
+		printForecastOptions();
+	}
 };
 
-const setWeatherArray = (weather) => {
-	 weatherArray = weather;
-	 runDomString();
-};
-
-const showChosenNumberOfDays = (numberOfDays) => {
-	chosenLength = numberOfDays;
-	runDomString();
-};
-
-const clearDom = () => {
-	$("#output").empty();
+const clearDom = (divName) => {
+	$(`#${divName}`).empty();
 };
 
 const printError = () => {
@@ -134,6 +150,7 @@ module.exports = {setWeatherArray, clearDom, showChosenNumberOfDays, printError}
 
 const owm = require("./owm");
 const dom = require("./dom");
+const firebaseApi = require("./firebaseapi");
 
 const usZipCodeRegex =/(^\d{5}$)|(^\d{5}-\d{4}$)/;
 
@@ -178,6 +195,16 @@ const searchZipcode = () => {
 		}
 };
 
+const getTheWeather = () => {
+			firebaseApi.getWeatherList().then((results) => {
+				console.log("results from get the weather", results.weather);
+				dom.clearDom('weatherMine');
+				dom.setWeatherArray(results, 'weatherMine', results.length, false);
+			}).catch((err) => {
+				console.log("error in getTheWeather", err);
+			});
+};
+
 
 // Add function: myLinks - click events that checks the id of event.target and:
 const myLinks = () => {
@@ -188,7 +215,8 @@ const myLinks = () => {
 			$("#authScreen").addClass("hide");
 		} else if (e.target.id === "mine") {
 			// // This should rerun the get method from our search, so the user doesn't have to reload to show changes
-			// getTheMovies();
+			getTheWeather();
+
 			$("#search").addClass("hide");
 			$("#myWeather").removeClass("hide");
 			$("#authScreen").addClass("hide");
@@ -200,27 +228,73 @@ const myLinks = () => {
 	});
 };
 
-// const googleAuth = () => {
-// 	$("#googleButton").click((event) => {
-// 		firebaseApi.authenticateGoogle().then((result) => {
-// 		}).catch((err) => {
-// 			console.log("error in authenticateGoogle", err);
-// 		});
-// 	});
-// };
+
+
+const googleAuth = () => {
+	$("#googleButton").click((event) => {
+		firebaseApi.authenticateGoogle().then((result) => {
+		}).catch((err) => {
+			console.log("error in authenticateGoogle", err);
+		});
+	});
+};
 
 
 const init = () => {
  pressEnter();
  pressSearch();
  daysChosen();
+ googleAuth();
  myLinks();
 };
 
 
 
 module.exports = {init};
-},{"./dom":2,"./owm":5}],4:[function(require,module,exports){
+},{"./dom":2,"./firebaseapi":4,"./owm":6}],4:[function(require,module,exports){
+"use strict";
+
+let firebaseKey = "";
+let userUid = "";
+
+const setKey = (key) => {
+	firebaseKey = key;
+};
+
+
+let authenticateGoogle = () => {
+  return new Promise((resolve, reject) => {
+    var provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider)
+      .then((authData) => {
+      	userUid = authData.user.uid;
+        resolve(authData.user);
+      }).catch((error) => {
+          reject(error);
+      });
+  });
+};
+
+const getWeatherList = () => {
+  let userWeather = [];
+  return new Promise((resolve, reject) => {
+    $.ajax(`${firebaseKey.databaseURL}/weather.json?orderBy="uid"&equalTo="${userUid}"`).then((weather) => {
+      if (weather != null){
+        Object.keys(weather).forEach((key) => {
+          weather[key].id = key;
+          userWeather.push(weather[key]);
+        });
+      }
+      resolve(userWeather);
+      console.log("user weather", userWeather);
+    }).catch((err) => {
+      reject(err);
+    });
+  });
+};
+
+module.exports = {setKey, authenticateGoogle, getWeatherList};
+},{}],5:[function(require,module,exports){
 "use strict";
 
 let events = require("./events");
@@ -228,7 +302,7 @@ let apiKeys = require("./apiKeys");
 
 apiKeys.retrieveKeys();
 events.init();
-},{"./apiKeys":1,"./events":3}],5:[function(require,module,exports){
+},{"./apiKeys":1,"./events":3}],6:[function(require,module,exports){
 "use strict";
 
 let owmKey;
@@ -277,4 +351,4 @@ const showResults = (weatherArray) => {
 };
 
 module.exports = {setKeys, searchWeather};
-},{"./dom":2}]},{},[4]);
+},{"./dom":2}]},{},[5]);

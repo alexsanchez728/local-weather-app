@@ -2,6 +2,7 @@
 
 const owm = require("./owm");
 const dom = require("./dom");
+const firebaseApi = require("./firebaseapi");
 
 const usZipCodeRegex =/(^\d{5}$)|(^\d{5}-\d{4}$)/;
 
@@ -46,6 +47,16 @@ const searchZipcode = () => {
 		}
 };
 
+const getTheWeather = () => {
+			firebaseApi.getWeatherList().then((results) => {
+				console.log("results from get the weather", results.weather);
+				dom.clearDom('weatherMine');
+				dom.setWeatherArray(results, 'weatherMine', results.length, false);
+			}).catch((err) => {
+				console.log("error in getTheWeather", err);
+			});
+};
+
 
 // Add function: myLinks - click events that checks the id of event.target and:
 const myLinks = () => {
@@ -56,7 +67,8 @@ const myLinks = () => {
 			$("#authScreen").addClass("hide");
 		} else if (e.target.id === "mine") {
 			// // This should rerun the get method from our search, so the user doesn't have to reload to show changes
-			// getTheMovies();
+			getTheWeather();
+
 			$("#search").addClass("hide");
 			$("#myWeather").removeClass("hide");
 			$("#authScreen").addClass("hide");
@@ -68,20 +80,23 @@ const myLinks = () => {
 	});
 };
 
-// const googleAuth = () => {
-// 	$("#googleButton").click((event) => {
-// 		firebaseApi.authenticateGoogle().then((result) => {
-// 		}).catch((err) => {
-// 			console.log("error in authenticateGoogle", err);
-// 		});
-// 	});
-// };
+
+
+const googleAuth = () => {
+	$("#googleButton").click((event) => {
+		firebaseApi.authenticateGoogle().then((result) => {
+		}).catch((err) => {
+			console.log("error in authenticateGoogle", err);
+		});
+	});
+};
 
 
 const init = () => {
  pressEnter();
  pressSearch();
  daysChosen();
+ googleAuth();
  myLinks();
 };
 

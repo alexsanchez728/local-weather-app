@@ -3,13 +3,20 @@
 let chosenLength = 1;
 let weatherArray;
 
-
-const runDomString = () => {
+const setWeatherArray = (weather, divName, search) => {
+	weatherArray = weather;
 	clearDom();
-	domString(weatherArray, chosenLength);
+	domString(weatherArray, divName, chosenLength, search);
 };
 
-const domString = (weatherArray, days) => {
+
+//Do I need divName here??
+const showChosenNumberOfDays = (numberOfDays, divName, search) => {
+	chosenLength = numberOfDays;
+	domString(weatherArray, divName, chosenLength, search);
+};
+
+const domString = (weatherArray, divName, days, search) => {
 	let domStrang = "";
 
 	domStrang +=	`<div class="container-fluid">`;
@@ -22,6 +29,11 @@ const domString = (weatherArray, days) => {
 			}
 
 		domStrang +=			`<div class="col-sm-3">`;
+
+		if (!search) {
+			domStrang +=				`<button class="btn btn-default delete" data-firebase-id="${weatherArray[i].id}">X</button>`;
+		}
+
 		domStrang +=				`<div class="thumbnail text-center" id="weatherCard">`;
 		domStrang +=					`<div class="info" id="weatherInfo">`;
 		domStrang +=					`<h4 id="date">${new Date(weatherArray[i].dt_txt).toLocaleDateString()}</h4>`;
@@ -29,6 +41,14 @@ const domString = (weatherArray, days) => {
 		domStrang +=						`<p>Conditions:<img src="http://openweathermap.org/img/w/${weatherArray[i].weather[0].icon}.png"></p> `;
 		domStrang +=						`<p>Air pressure: ${weatherArray[i].main.pressure} hpa</p>`;
 		domStrang +=						`<p>Wind speed: ${weatherArray[i].wind.speed} m/s</p>`;
+
+		if(search) {
+
+			domStrang +=					`<p>`;
+			domStrang +=						`<a class="btn btn-default favWeather" role="button">Save This Day!</a>`;
+			domStrang +=					`</p>`;
+		}
+
 		domStrang +=					`</div>`;
 		domStrang +=				`</div>`;
 		domStrang +=			`</div>`;
@@ -37,7 +57,7 @@ const domString = (weatherArray, days) => {
 		}
 	}
 	domStrang +=		`</div>`;
-	printToDom(domStrang);
+	printToDom(domStrang, divName, search);
 };
 
 const printForecastOptions = () => {
@@ -71,23 +91,16 @@ const printForecastOptions = () => {
 	);
 };
 
-const printToDom = (strang) => {
-	$("#output").append(strang);
-	printForecastOptions();
+const printToDom = (strang, divName, search) => {
+	$(`#${divName}`).append(strang);
+
+	if (search) {
+		printForecastOptions();
+	}
 };
 
-const setWeatherArray = (weather) => {
-	 weatherArray = weather;
-	 runDomString();
-};
-
-const showChosenNumberOfDays = (numberOfDays) => {
-	chosenLength = numberOfDays;
-	runDomString();
-};
-
-const clearDom = () => {
-	$("#output").empty();
+const clearDom = (divName) => {
+	$(`#${divName}`).empty();
 };
 
 const printError = () => {
