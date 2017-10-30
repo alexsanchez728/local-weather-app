@@ -197,7 +197,7 @@ const searchZipcode = () => {
 
 const getTheWeather = () => {
 			firebaseApi.getWeatherList().then((results) => {
-				console.log("results from get the weather", results.weather);
+				console.log("results from get the weather", results);
 				dom.clearDom('weatherMine');
 				dom.setWeatherArray(results, 'weatherMine', results.length, false);
 			}).catch((err) => {
@@ -346,7 +346,7 @@ const showResults = (weatherArray) => {
 	// every 8th object is pushed to a new array to be used
 	// That way I can minimize the calls I make to the API
 
-	dom.setWeatherArray(fiveDayForecast);
+	dom.setWeatherArray(fiveDayForecast, "output", true);
 	console.log(fiveDayForecast);
 };
 

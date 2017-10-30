@@ -41,7 +41,7 @@ const showResults = (weatherArray) => {
 	// every 8th object is pushed to a new array to be used
 	// That way I can minimize the calls I make to the API
 
-	dom.setWeatherArray(fiveDayForecast);
+	dom.setWeatherArray(fiveDayForecast, "output", true);
 	console.log(fiveDayForecast);
 };
 

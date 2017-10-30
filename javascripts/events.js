@@ -49,7 +49,7 @@ const searchZipcode = () => {
 
 const getTheWeather = () => {
 			firebaseApi.getWeatherList().then((results) => {
-				console.log("results from get the weather", results.weather);
+				console.log("results from get the weather", results);
 				dom.clearDom('weatherMine');
 				dom.setWeatherArray(results, 'weatherMine', results.length, false);
 			}).catch((err) => {
