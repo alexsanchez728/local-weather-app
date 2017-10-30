@@ -28,11 +28,12 @@ module.exports = {retrieveKeys};
 },{"./firebaseapi":4,"./owm":6}],2:[function(require,module,exports){
 "use strict";
 
-let chosenLength = 1;
+let chosenLength;
 let weatherArray;
 
-const setWeatherArray = (weather, divName, search) => {
+const setWeatherArray = (weather, divName, arrayLength, search) => {
 	weatherArray = weather;
+	chosenLength = arrayLength;
 	clearDom(divName);
 	domString(weatherArray, divName, chosenLength, search);
 };
@@ -49,7 +50,10 @@ const domString = (weatherArray, divName, days, search) => {
 	let domStrang = "";
 
 	domStrang +=	`<div class="container-fluid">`;
-	domStrang +=		`<h3 class="text-center" id="cityName">For Zipcode: "${$('#search-input').val()}"</h3>`;
+
+	if (search) {
+		domStrang +=		`<h3 class="text-center" id="cityName">For Zipcode: "${$('#search-input').val()}"</h3>`;
+	}
 
 	for (let i=0; i<chosenLength; i++) {
 
@@ -57,19 +61,20 @@ const domString = (weatherArray, divName, days, search) => {
 			domStrang +=	`<div class="row">`;
 			}
 
-		domStrang +=			`<div class="col-sm-3">`;
-
+		domStrang +=			`<div class="col-sm-3 weatherCard">`;
+		domStrang +=				`<div class="thumbnail text-center">`;
 		if (!search) {
 			domStrang +=				`<button class="btn btn-default delete" data-firebase-id="${weatherArray[i].id}">X</button>`;
 		}
-
-		domStrang +=				`<div class="thumbnail text-center" id="weatherCard">`;
 		domStrang +=					`<div class="info" id="weatherInfo">`;
-		domStrang +=					`<h4 id="date">${new Date(weatherArray[i].dt_txt).toLocaleDateString()}</h4>`;
-		domStrang +=						`<p>Temperature: ${weatherArray[i].main.temp}&deg F</p>`;
-		domStrang +=						`<p>Conditions:<img src="http://openweathermap.org/img/w/${weatherArray[i].weather[0].icon}.png"></p> `;
-		domStrang +=						`<p>Air pressure: ${weatherArray[i].main.pressure} hpa</p>`;
-		domStrang +=						`<p>Wind speed: ${weatherArray[i].wind.speed} m/s</p>`;
+		domStrang +=					`<h4 id="date" class="date">${new Date(weatherArray[i].dt_txt).toLocaleDateString()}</h4>`;
+		domStrang +=					`<p class="highTemp">High of ${weatherArray[i].main.temp_max}&deg F</p>`;
+		domStrang +=					`<p class="lowTemp">Low of ${weatherArray[i].main.temp_min}&deg F</p>`;
+		domStrang +=					`<p class="humidity">Humidity: ${weatherArray[i].main.humidity}&#37</p>`;
+		domStrang +=					`<p class="conditions sr-only">${weatherArray[i].weather[0].description}</p>`;
+		domStrang +=					`<p class="condiitonsIcon"><img src="http://openweathermap.org/img/w/${weatherArray[i].weather[0].icon}.png"></p>`;
+		domStrang +=					`<p class="air-pressure">Air pressure: ${weatherArray[i].main.pressure} hpa</p>`;
+		domStrang +=					`<p class="wind-speed">Wind speed: ${weatherArray[i].wind.speed} m/s</p><p class="wind-direction"> at ${weatherArray[i].wind.deg}</p>`;
 
 		if(search) {
 
@@ -133,7 +138,7 @@ const clearDom = (divName) => {
 };
 
 const printError = () => {
-	clearDom();
+	clearDom("output");
 
 	let userError = "";
 		userError += `<div class="row">`;
@@ -214,6 +219,7 @@ const myLinks = () => {
 			$("#search").removeClass("hide");
 			$("#myWeather").addClass("hide");
 			$("#authScreen").addClass("hide");
+			$("#days").removeClass("hide");
 		} else if (e.target.id === "mine") {
 			// // This should rerun the get method from our search, so the user doesn't have to reload to show changes
 			getTheWeather();
@@ -221,15 +227,15 @@ const myLinks = () => {
 			$("#search").addClass("hide");
 			$("#myWeather").removeClass("hide");
 			$("#authScreen").addClass("hide");
+			$("#days").addClass("hide");
 		} else if (e.target.id === "authenticate") {
 			$("#search").addClass("hide");
 			$("#myWeather").addClass("hide");
 			$("#authScreen").removeClass("hide");
+			$("#days").addClass("hide");
 		}
 	});
 };
-
-
 
 const googleAuth = () => {
 	$("#googleButton").click((event) => {
@@ -241,12 +247,63 @@ const googleAuth = () => {
 };
 
 
+
+const favEvents = () => {
+	$("body").on("click", ".favWeather", (e) => {
+
+		let mommy = e.target.closest(".weatherCard");
+
+		let newFavWeather = {
+			"main": {
+        "temp_min": $(mommy).find(".lowTemp").html(),
+        "temp_max": $(mommy).find(".highTemp").html(),
+        "pressure": $(mommy).find(".air-pressure").html(),
+        "humidity": $(mommy).find(".humidity").html(),
+			},
+	      "weather": [{
+        "id": $(mommy).find(".temp_max").html(),
+        "description": $(mommy).find(".conditions").html(),
+        "icon": $(mommy).find(".condiitonsIcon").html(),
+      }],
+      "wind": {
+        "speed": $(mommy).find(".wind-speed").html(),
+        "deg": $(mommy).find(".wind-direction").html(),
+      },
+      "dt_txt": $(mommy).find(".date").html(),
+			"uid":"",
+		};
+
+		firebaseApi.saveFavDay(newFavWeather).then((results) => {
+			$(mommy).remove();
+		}).catch((err) => {
+			console.log("error in saveFavDay", err);
+		});
+
+	});
+};
+
+const deleteFav = () => {
+	$("body").on("click", ".delete", (e) => {
+		let dayId = $(e.target).data("firebase-id");
+
+		firebaseApi.deleteFavDay(dayId).then(() => {
+			getTheWeather();
+		}).catch((err) => {
+			console.log("error in delete movie", err);
+		});
+	});
+};
+
+
+
 const init = () => {
- pressEnter();
- pressSearch();
- daysChosen();
- googleAuth();
- myLinks();
+	pressEnter();
+	pressSearch();
+	daysChosen();
+	googleAuth();
+	myLinks();
+	favEvents();
+	deleteFav();
 };
 
 
@@ -296,7 +353,37 @@ const getWeatherList = () => {
   });
 };
 
-module.exports = {setKey, authenticateGoogle, getWeatherList};
+
+const saveFavDay = (daysWeather) => {
+  daysWeather.uid = userUid;
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      method: "POST",
+      url: `${firebaseKey.databaseURL}/weather.json`,
+      data: JSON.stringify(daysWeather)
+    }).then((result) => {
+      resolve(result);
+    }).catch((err) => {
+      reject(err);
+    });
+  });
+};
+
+const deleteFavDay = (weatherId) => {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      method: "DELETE",
+      url: `${firebaseKey.databaseURL}/weather/${weatherId}.json`
+    }).then((weather) => {
+      resolve(weather);
+    }).catch((err) => {
+      reject(err);
+    });
+  });
+};
+
+
+module.exports = {setKey, authenticateGoogle, getWeatherList, saveFavDay, deleteFavDay};
 },{}],5:[function(require,module,exports){
 "use strict";
 
@@ -343,14 +430,13 @@ const showResults = (weatherArray) => {
 			fiveDayForecast.push(weatherArray.list[i]);
 		}
 	}
-	dom.clearDom();
+	dom.clearDom('output');
 
 	// just get all 5 days in 3h format, store em in search-input, only show what the user asks for
 	// every 8th object is pushed to a new array to be used
 	// That way I can minimize the calls I make to the API
 
-	dom.setWeatherArray(fiveDayForecast, "output", true);
-	console.log(fiveDayForecast);
+	dom.setWeatherArray(fiveDayForecast, "output", 1, true);
 };
 
 module.exports = {setKeys, searchWeather};

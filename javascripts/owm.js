@@ -35,14 +35,13 @@ const showResults = (weatherArray) => {
 			fiveDayForecast.push(weatherArray.list[i]);
 		}
 	}
-	dom.clearDom();
+	dom.clearDom('output');
 
 	// just get all 5 days in 3h format, store em in search-input, only show what the user asks for
 	// every 8th object is pushed to a new array to be used
 	// That way I can minimize the calls I make to the API
 
-	dom.setWeatherArray(fiveDayForecast, "output", true);
-	console.log(fiveDayForecast);
+	dom.setWeatherArray(fiveDayForecast, "output", 1, true);
 };
 
 module.exports = {setKeys, searchWeather};

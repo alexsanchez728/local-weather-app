@@ -1,10 +1,11 @@
 "use strict";
 
-let chosenLength = 1;
+let chosenLength;
 let weatherArray;
 
-const setWeatherArray = (weather, divName, search) => {
+const setWeatherArray = (weather, divName, arrayLength, search) => {
 	weatherArray = weather;
+	chosenLength = arrayLength;
 	clearDom(divName);
 	domString(weatherArray, divName, chosenLength, search);
 };
@@ -21,7 +22,10 @@ const domString = (weatherArray, divName, days, search) => {
 	let domStrang = "";
 
 	domStrang +=	`<div class="container-fluid">`;
-	domStrang +=		`<h3 class="text-center" id="cityName">For Zipcode: "${$('#search-input').val()}"</h3>`;
+
+	if (search) {
+		domStrang +=		`<h3 class="text-center" id="cityName">For Zipcode: "${$('#search-input').val()}"</h3>`;
+	}
 
 	for (let i=0; i<chosenLength; i++) {
 
@@ -29,19 +33,20 @@ const domString = (weatherArray, divName, days, search) => {
 			domStrang +=	`<div class="row">`;
 			}
 
-		domStrang +=			`<div class="col-sm-3">`;
-
+		domStrang +=			`<div class="col-sm-3 weatherCard">`;
+		domStrang +=				`<div class="thumbnail text-center">`;
 		if (!search) {
 			domStrang +=				`<button class="btn btn-default delete" data-firebase-id="${weatherArray[i].id}">X</button>`;
 		}
-
-		domStrang +=				`<div class="thumbnail text-center" id="weatherCard">`;
 		domStrang +=					`<div class="info" id="weatherInfo">`;
-		domStrang +=					`<h4 id="date">${new Date(weatherArray[i].dt_txt).toLocaleDateString()}</h4>`;
-		domStrang +=						`<p>Temperature: ${weatherArray[i].main.temp}&deg F</p>`;
-		domStrang +=						`<p>Conditions:<img src="http://openweathermap.org/img/w/${weatherArray[i].weather[0].icon}.png"></p> `;
-		domStrang +=						`<p>Air pressure: ${weatherArray[i].main.pressure} hpa</p>`;
-		domStrang +=						`<p>Wind speed: ${weatherArray[i].wind.speed} m/s</p>`;
+		domStrang +=					`<h4 id="date" class="date">${new Date(weatherArray[i].dt_txt).toLocaleDateString()}</h4>`;
+		domStrang +=					`<p class="highTemp">High of ${weatherArray[i].main.temp_max}&deg F</p>`;
+		domStrang +=					`<p class="lowTemp">Low of ${weatherArray[i].main.temp_min}&deg F</p>`;
+		domStrang +=					`<p class="humidity">Humidity: ${weatherArray[i].main.humidity}&#37</p>`;
+		domStrang +=					`<p class="conditions sr-only">${weatherArray[i].weather[0].description}</p>`;
+		domStrang +=					`<p class="condiitonsIcon"><img src="http://openweathermap.org/img/w/${weatherArray[i].weather[0].icon}.png"></p>`;
+		domStrang +=					`<p class="air-pressure">Air pressure: ${weatherArray[i].main.pressure} hpa</p>`;
+		domStrang +=					`<p class="wind-speed">Wind speed: ${weatherArray[i].wind.speed} m/s</p><p class="wind-direction"> at ${weatherArray[i].wind.deg}</p>`;
 
 		if(search) {
 
@@ -105,7 +110,7 @@ const clearDom = (divName) => {
 };
 
 const printError = () => {
-	clearDom();
+	clearDom("output");
 
 	let userError = "";
 		userError += `<div class="row">`;

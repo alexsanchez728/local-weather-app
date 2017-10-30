@@ -65,6 +65,7 @@ const myLinks = () => {
 			$("#search").removeClass("hide");
 			$("#myWeather").addClass("hide");
 			$("#authScreen").addClass("hide");
+			$("#days").removeClass("hide");
 		} else if (e.target.id === "mine") {
 			// // This should rerun the get method from our search, so the user doesn't have to reload to show changes
 			getTheWeather();
@@ -72,15 +73,15 @@ const myLinks = () => {
 			$("#search").addClass("hide");
 			$("#myWeather").removeClass("hide");
 			$("#authScreen").addClass("hide");
+			$("#days").addClass("hide");
 		} else if (e.target.id === "authenticate") {
 			$("#search").addClass("hide");
 			$("#myWeather").addClass("hide");
 			$("#authScreen").removeClass("hide");
+			$("#days").addClass("hide");
 		}
 	});
 };
-
-
 
 const googleAuth = () => {
 	$("#googleButton").click((event) => {
@@ -92,12 +93,63 @@ const googleAuth = () => {
 };
 
 
+
+const favEvents = () => {
+	$("body").on("click", ".favWeather", (e) => {
+
+		let mommy = e.target.closest(".weatherCard");
+
+		let newFavWeather = {
+			"main": {
+        "temp_min": $(mommy).find(".lowTemp").html(),
+        "temp_max": $(mommy).find(".highTemp").html(),
+        "pressure": $(mommy).find(".air-pressure").html(),
+        "humidity": $(mommy).find(".humidity").html(),
+			},
+	      "weather": [{
+        "id": $(mommy).find(".temp_max").html(),
+        "description": $(mommy).find(".conditions").html(),
+        "icon": $(mommy).find(".condiitonsIcon").html(),
+      }],
+      "wind": {
+        "speed": $(mommy).find(".wind-speed").html(),
+        "deg": $(mommy).find(".wind-direction").html(),
+      },
+      "dt_txt": $(mommy).find(".date").html(),
+			"uid":"",
+		};
+
+		firebaseApi.saveFavDay(newFavWeather).then((results) => {
+			$(mommy).remove();
+		}).catch((err) => {
+			console.log("error in saveFavDay", err);
+		});
+
+	});
+};
+
+const deleteFav = () => {
+	$("body").on("click", ".delete", (e) => {
+		let dayId = $(e.target).data("firebase-id");
+
+		firebaseApi.deleteFavDay(dayId).then(() => {
+			getTheWeather();
+		}).catch((err) => {
+			console.log("error in delete movie", err);
+		});
+	});
+};
+
+
+
 const init = () => {
- pressEnter();
- pressSearch();
- daysChosen();
- googleAuth();
- myLinks();
+	pressEnter();
+	pressSearch();
+	daysChosen();
+	googleAuth();
+	myLinks();
+	favEvents();
+	deleteFav();
 };
 
 

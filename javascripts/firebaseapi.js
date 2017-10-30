@@ -41,4 +41,34 @@ const getWeatherList = () => {
   });
 };
 
-module.exports = {setKey, authenticateGoogle, getWeatherList};
+
+const saveFavDay = (daysWeather) => {
+  daysWeather.uid = userUid;
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      method: "POST",
+      url: `${firebaseKey.databaseURL}/weather.json`,
+      data: JSON.stringify(daysWeather)
+    }).then((result) => {
+      resolve(result);
+    }).catch((err) => {
+      reject(err);
+    });
+  });
+};
+
+const deleteFavDay = (weatherId) => {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      method: "DELETE",
+      url: `${firebaseKey.databaseURL}/weather/${weatherId}.json`
+    }).then((weather) => {
+      resolve(weather);
+    }).catch((err) => {
+      reject(err);
+    });
+  });
+};
+
+
+module.exports = {setKey, authenticateGoogle, getWeatherList, saveFavDay, deleteFavDay};
