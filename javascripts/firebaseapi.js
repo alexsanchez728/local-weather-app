@@ -25,6 +25,9 @@ const getWeatherList = () => {
   let userWeather = [];
   return new Promise((resolve, reject) => {
     $.ajax(`${firebaseKey.databaseURL}/weather.json?orderBy="uid"&equalTo="${userUid}"`).then((weather) => {
+    // had to hard code userId in weather.json for ^^ to work
+            // console.log("weather results", weather);
+            // console.log("userUid", userUid);
       if (weather != null){
         Object.keys(weather).forEach((key) => {
           weather[key].id = key;
@@ -32,7 +35,6 @@ const getWeatherList = () => {
         });
       }
       resolve(userWeather);
-      console.log("user weather", userWeather);
     }).catch((err) => {
       reject(err);
     });

@@ -33,7 +33,7 @@ let weatherArray;
 
 const setWeatherArray = (weather, divName, search) => {
 	weatherArray = weather;
-	clearDom();
+	clearDom(divName);
 	domString(weatherArray, divName, chosenLength, search);
 };
 
@@ -41,6 +41,7 @@ const setWeatherArray = (weather, divName, search) => {
 //Do I need divName here??
 const showChosenNumberOfDays = (numberOfDays, divName, search) => {
 	chosenLength = numberOfDays;
+	clearDom(divName);
 	domString(weatherArray, divName, chosenLength, search);
 };
 
@@ -104,11 +105,11 @@ const printForecastOptions = () => {
 					<p class="text-center">Last Updated: ${timeStamp}</p>
 
 					<div>
-					  <button class="btn btn-lg btn-default" id="facebookButton">
-   						<img src="./images/facebook.png">
+					  <button class="btn btn-lg btn-default col-sm-offset-4" id="facebookButton">
+   						<img class="social-icon" src="./images/facebook.png">
   					</button>
 					  <button class="btn btn-lg btn-default" id="twitterButton">
-   						<img src="./images/twitter.png">
+   						<img class="social-icon"  src="./images/twitter.jpg">
   					</button>
 					</div>
 
@@ -178,7 +179,7 @@ const daysChosen = () => {
 			// using the id name set the corresponding number of days to show up
 			let currentChoiceNumber = (currentChoiceFromDom === "one-day" ? 1 : currentChoiceFromDom === "three-day" ? 3 : 5);
 			
-			dom.showChosenNumberOfDays(currentChoiceNumber);
+			dom.showChosenNumberOfDays(currentChoiceNumber, "output", true);
 		}
 	});
 };
@@ -197,7 +198,7 @@ const searchZipcode = () => {
 
 const getTheWeather = () => {
 			firebaseApi.getWeatherList().then((results) => {
-				console.log("results from get the weather", results);
+				// console.log("results from get the weather", results);
 				dom.clearDom('weatherMine');
 				dom.setWeatherArray(results, 'weatherMine', results.length, false);
 			}).catch((err) => {
@@ -279,6 +280,9 @@ const getWeatherList = () => {
   let userWeather = [];
   return new Promise((resolve, reject) => {
     $.ajax(`${firebaseKey.databaseURL}/weather.json?orderBy="uid"&equalTo="${userUid}"`).then((weather) => {
+    // had to hard code userId in weather.json for ^^ to work
+            // console.log("weather results", weather);
+            // console.log("userUid", userUid);
       if (weather != null){
         Object.keys(weather).forEach((key) => {
           weather[key].id = key;
@@ -286,7 +290,6 @@ const getWeatherList = () => {
         });
       }
       resolve(userWeather);
-      console.log("user weather", userWeather);
     }).catch((err) => {
       reject(err);
     });

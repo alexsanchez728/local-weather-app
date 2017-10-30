@@ -5,7 +5,7 @@ let weatherArray;
 
 const setWeatherArray = (weather, divName, search) => {
 	weatherArray = weather;
-	clearDom();
+	clearDom(divName);
 	domString(weatherArray, divName, chosenLength, search);
 };
 
@@ -13,6 +13,7 @@ const setWeatherArray = (weather, divName, search) => {
 //Do I need divName here??
 const showChosenNumberOfDays = (numberOfDays, divName, search) => {
 	chosenLength = numberOfDays;
+	clearDom(divName);
 	domString(weatherArray, divName, chosenLength, search);
 };
 
@@ -76,11 +77,11 @@ const printForecastOptions = () => {
 					<p class="text-center">Last Updated: ${timeStamp}</p>
 
 					<div>
-					  <button class="btn btn-lg btn-default" id="facebookButton">
-   						<img src="./images/facebook.png">
+					  <button class="btn btn-lg btn-default col-sm-offset-4" id="facebookButton">
+   						<img class="social-icon" src="./images/facebook.png">
   					</button>
 					  <button class="btn btn-lg btn-default" id="twitterButton">
-   						<img src="./images/twitter.png">
+   						<img class="social-icon"  src="./images/twitter.jpg">
   					</button>
 					</div>
 

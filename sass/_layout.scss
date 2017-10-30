@@ -1,10 +1,15 @@
 @import 'variables';
 
 body { 
-	padding-bottom: 120px; 
+	padding-bottom: 200px; 
 }
 
 
 #weatherContainer {
 	box-shadow: $box-shadow;
+}
+
+.social-icon {
+	max-height: $icon-size;
+	max-width: $icon-size;
 }

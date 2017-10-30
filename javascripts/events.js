@@ -30,7 +30,7 @@ const daysChosen = () => {
 			// using the id name set the corresponding number of days to show up
 			let currentChoiceNumber = (currentChoiceFromDom === "one-day" ? 1 : currentChoiceFromDom === "three-day" ? 3 : 5);
 			
-			dom.showChosenNumberOfDays(currentChoiceNumber);
+			dom.showChosenNumberOfDays(currentChoiceNumber, "output", true);
 		}
 	});
 };
@@ -49,7 +49,7 @@ const searchZipcode = () => {
 
 const getTheWeather = () => {
 			firebaseApi.getWeatherList().then((results) => {
-				console.log("results from get the weather", results);
+				// console.log("results from get the weather", results);
 				dom.clearDom('weatherMine');
 				dom.setWeatherArray(results, 'weatherMine', results.length, false);
 			}).catch((err) => {
